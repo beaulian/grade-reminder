@@ -5,6 +5,12 @@
 
 ##### ！！！注意：只能运行在python3环境中
 
+#### 创建conda虚拟环境并激活
+```bash
+conda create -n grade_reminder pip
+conda activate grade_reminder
+```
+
 #### 安装依赖包
 ```bash
 pip install requests bs4 schedule 
