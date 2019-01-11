@@ -32,7 +32,14 @@ class GradeReminder(object):
                 text = convert_list_to_email_text(remind_classes)
                 self._email_sender(text)
 
-        schedule.every().hour.do(remind_job)
+        assert len(cfg.strategy) == 1, 'wrong format for `strategy`, only support one key!'
+        [[type_, number]] = cfg.strategy.items()
+        if type_ == 'hours':
+            schedule.every(number).hours.do(remind_job)
+        elif type_ == 'minutes':
+            schedule.every(number).minutes.do(remind_job)
+        else:
+            raise KeyError('wrong format for `strategy`, only support `hours` and `minutes`!')
 
 
 def __start_schedule_deamon():

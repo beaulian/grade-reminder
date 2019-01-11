@@ -7,7 +7,11 @@ from functools import partial
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 '
-                  '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+                  '(KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+    'Accept-Encoding': 'gzip, deflate',
+    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,de;q=0.7,pt;q=0.6',
+    'Connection': 'keep-alive',
 }
 
 
@@ -44,8 +48,9 @@ class GradeFetcher(object):
         # login
         response = self._post(login_url, params=params, data=auth_data)
         # make sure that the crawler has logged into the site successfully.
-        assert response.history[-1].headers['Location'] == \
-               'http://egate.shanghaitech.edu.cn/new/index.html', 'login failed!'
+        if response.history:
+            assert response.history[-1].headers['Location'] == \
+                   'http://egate.shanghaitech.edu.cn/new/index.html', 'login failed!'
 
     def fetch_grade(self):
         manage_url = 'http://grad.shanghaitech.edu.cn/'
