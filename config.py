@@ -1,3 +1,4 @@
+#coding=utf-8
 http_timeout = 15 # HTTP连接超时阈值
 
 # account
