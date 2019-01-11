@@ -25,3 +25,6 @@ python remind_grade.py &
 
 #### 会遇到的bug
 如果你遇到`由于目标计算机积极拒绝，无法连接`之类的错误，可能是程序被封了。。。
+
+#### 联系
+有问题联系我 <guanjw@shanghaitech.edu.cn>
