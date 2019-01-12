@@ -33,6 +33,9 @@ class GradeReminder(object):
                 self._email_sender(text)
 
         assert len(cfg.strategy) == 1, 'wrong format for `strategy`, only support one key!'
+        # execute the function for the first time
+        remind_job()
+
         [[type_, number]] = cfg.strategy.items()
         if type_ == 'hours':
             schedule.every(number).hours.do(remind_job)
