@@ -111,6 +111,7 @@ def make_grade_fetcher(cfg):
 
 if __name__ == '__main__':
     import config as cfg
+    
     grade_fetcher = make_grade_fetcher(cfg)
     classes = grade_fetcher.fetch_grade()
     print(classes)
