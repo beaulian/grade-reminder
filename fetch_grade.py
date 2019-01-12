@@ -16,13 +16,14 @@ HEADERS = {
 
 
 class GradeFetcher(object):
-    def __init__(self, username, password, http_timeout=15):
+    def __init__(self, username, password, http_timeout=15, try_to_connect_times=10):
         self._session = requests.Session()
         # initialize customized `get` and `post` methods.
         self._get = partial(self._session.get, headers=HEADERS, timeout=http_timeout)
         self._post = partial(self._session.post, headers=HEADERS, timeout=http_timeout)
         self.username = username
         self.password = password
+        self.try_to_connect_times = try_to_connect_times
 
     def _login(self):
         login_url = 'https://ids.shanghaitech.edu.cn/authserver/login'
@@ -59,10 +60,30 @@ class GradeFetcher(object):
         grade_url = 'http://grad.shanghaitech.edu.cn/PostGraduate' \
                     '/WitMis_CourseScoreView.aspx'
 
+        def try_to_connect_manage():
+            import os, time
+
+            print('starting try to connect managing website...')
+            times = 1
+            while True:
+                try:
+                    print(f'{times} try...')
+                    self._get(manage_url)
+                except requests.exceptions.ConnectionError:
+                    times += 1
+                    if times > self.try_to_connect_times:
+                        print('connected failed!!!')
+                        os._exit(1)
+                else:
+                    break
+            print('connected succeeded!')
+
         def prepare_grade_list():
             self._login()
+            print('logged succeeded!')
+            # try to connect managing website
+            try_to_connect_manage()
             # multiple redirects
-            self._get(manage_url)
             self._get(auth_url)
             response = self._get(grade_url)
             response.encoding = 'utf-8'

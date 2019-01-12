@@ -1,5 +1,6 @@
 #coding=utf-8
 http_timeout = 15 # HTTP连接超时阈值
+try_to_connect_times = 10 # HTTP连接尝试次数
 
 # account
 username = 'xxx'  # 学号
