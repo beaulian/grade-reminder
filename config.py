@@ -12,6 +12,13 @@ mail_sender = '123456@qq.com' # 发送者和接收者填同一个邮箱
 mail_password = 'xxx' # qq邮箱授权码，如果不清楚什么是授权码，请百度
 mail_receiver_list = ['123456@qq.com', ] # 接收者，默认就自己一个
 
+# redis
+use_redis = True
+redis_host = '127.0.0.1'
+redis_port = 6379
+redis_db = 0
+redis_password = None # 如果需要密码，把None改成密码就行
+
 # scheduler
 # 这里填写的是时间提醒策略
 # 严正声明！！！本人不支持时间间隔设置得太短。

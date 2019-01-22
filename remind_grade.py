@@ -3,6 +3,7 @@
 import time
 import schedule
 import threading
+from redis import Redis
 from collections import defaultdict
 
 import config as cfg
@@ -11,11 +12,32 @@ from send_email import (make_email_sender,
                         convert_list_to_email_text)
 
 
+class RedisCache(object):
+    def __init__(self, host='127.0.0.1', port=6379,
+                 db=0, password=None, **kwargs):
+        self.__redis_server = Redis(host=host, port=port, db=db,
+                                    password=password, **kwargs)
+
+    def __setitem__(self, key, value):
+        self.__redis_server.set(key, value)
+
+    def __getitem__(self, key):
+        return self.__redis_server.get(key)
+
+    def __contains__(self, key):
+        return self.__redis_server.exists(key)
+
+
 class GradeReminder(object):
     def __init__(self, cfg):
         self.cfg = cfg
         self._email_sender = make_email_sender(cfg)
-        self.__cached_classes = defaultdict(int)  # cache classes which are already known.
+        # cache classes which are already known.
+        if cfg.use_redis:
+            self.__cached_classes = RedisCache(cfg.redis_host, cfg.redis_port,
+                                               cfg.redis_db, cfg.redis_password)
+        else:
+            self.__cached_classes = defaultdict(int)
 
     def remind_grade(self):
         def remind_job():
@@ -24,7 +46,7 @@ class GradeReminder(object):
             remind_classes = []
             for class_ in classes:
                 if class_[0] not in self.__cached_classes and \
-                                    class_[1] != '成绩未录入':
+                                    any([eng in class_[1] for eng in 'ABCDEFGH']):
                     self.__cached_classes[class_[0]] = 1
                     remind_classes.append(class_)
             # if exists classes which are not known yet.
