@@ -67,11 +67,27 @@ class GradeReminder(object):
             raise KeyError('wrong format for `strategy`, only support `hours` and `minutes`!')
 
 
+def __check_network_connected():
+    import socket
+
+    def __is_network_connected():
+        try:
+            socket.create_connection(("www.qq.com", 80))
+            return True
+        except OSError:
+            pass
+        return False
+
+    while not __is_network_connected():
+        print('please connect the network first!')
+        time.sleep(1)
+
+
 def __start_schedule_deamon():
     def schedule_run():
         while True:
             schedule.run_pending()
-            time.sleep(1)
+            time.sleep(5)
 
     t = threading.Thread(target=schedule_run)
     t.start()
@@ -79,6 +95,9 @@ def __start_schedule_deamon():
 
 
 def main():
+    # check if network is connected
+    __check_network_connected()
+    # register remind service
     grade_reminder = GradeReminder(cfg)
     grade_reminder.remind_grade()
     # start to run thread
